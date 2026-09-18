@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Για την Ευφροσύνη ❤️</title>
+<style>
+  :root { --pink:#e85d78; --soft:#fff6f2; --line:#ffd0c8; --ink:#49342f; }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; min-height:100vh; padding:32px 16px;
+    background: radial-gradient(circle at 15% 10%, #ffe3e8 0, transparent 24%),
+                radial-gradient(circle at 90% 80%, #ffeadc 0, transparent 26%), var(--soft);
+    color:var(--ink); font-family: "Trebuchet MS", Arial, sans-serif;
+    display:flex; justify-content:center; align-items:center;
+  }
+  main { width:min(850px,100%); text-align:center; position:relative; }
+  .tiny { color:#f28ba0; font-size:1.25rem; letter-spacing:12px; }
+  h1 { margin:8px 0 0; font-size:clamp(1.2rem,4vw,2rem); font-weight:500; }
+  .name { margin:0; color:var(--pink); font-size:clamp(3.5rem,12vw,7rem); font-weight:800; letter-spacing:-3px; }
+  .intro { font-size:1.08rem; line-height:1.8; margin:16px auto 28px; max-width:520px; }
+  .panel { background:rgba(255,255,255,.78); border:2px solid var(--line); border-radius:24px; padding:24px; margin:22px 0; box-shadow:0 8px 0 rgba(232,93,120,.06); }
+  .panel h2 { font-size:1.4rem; font-weight:600; margin:0 0 18px; }
+  input[type="datetime-local"] {
+    width:min(100%,560px); padding:15px 16px; border:2px solid #ffc5bd;
+    border-radius:15px; background:white; color:#6a5b56; font:inherit;
+  }
+  button { display:block; margin:16px auto 0; padding:14px 28px; border:0; border-radius:15px;
+    background:var(--pink); color:white; font:inherit; font-size:1.05rem; cursor:pointer;
+    box-shadow:0 4px 0 #d94c68; transition:transform .15s; }
+  button:hover { transform:translateY(-2px); }
+  .countdown { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  .unit { background:#fffaf7; border:1px solid var(--line); border-radius:18px; padding:20px 8px; }
+  .number { display:block; color:var(--pink); font-size:clamp(2rem,7vw,3.8rem); font-weight:800; font-variant-numeric:tabular-nums; }
+  .unit span:last-child { font-size:.95rem; }
+  #status { margin:16px 0 0; min-height:1.5em; }
+  .love-note { margin-top:28px; padding:28px 22px; background:white; border:2px solid #ffddd7; border-radius:24px; line-height:1.9; }
+  .love-note strong { color:var(--pink); }
+  .bear { font-size:4.4rem; margin:0 0 4px; }
+  footer { margin-top:20px; color:#b86c79; }
+  @media(max-width:520px) {
+    .panel { padding:18px 12px; }
+    .countdown { grid-template-columns:repeat(2,1fr); }
+    .name { letter-spacing:-1px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="tiny">♡ ✧ ♡</div>
+  <div class="bear" aria-hidden="true">🧸💗</div>
+  <h1>Για την πιο όμορφη</h1>
+  <p class="name">Ευφροσύνη</p>
+  <div class="tiny">— ♥ —</div>
+  <p class="intro">Κάθε μέρα που περνάει, με φέρνει πιο κοντά στη στιγμή<br>
+    που θα σε δω και θα σε αγκαλιάσω! 💕</p>
+
+  <section class="panel" aria-labelledby="date-title">
+    <h2 id="date-title">💗 Πότε θα βρεθούμε; 💗</h2>
+    <label for="meetDate">Διάλεξε ημέρα και ώρα:</label><br><br>
+    <input id="meetDate" type="datetime-local">
+    <button id="startBtn" type="button">♡ Ας μετρήσουμε αντίστροφα! ♡</button>
+    <p id="status" aria-live="polite">Διάλεξε την ημερομηνία της συνάντησής μας ✨</p>
+  </section>
+
+  <section class="panel" aria-labelledby="count-title">
+    <h2 id="count-title">♡ Αντίστροφη μέτρηση ♡</h2>
+    <div class="countdown">
+      <div class="unit"><span class="number" id="days">00</span><span>Ημέρες</span></div>
+      <div class="unit"><span class="number" id="hours">00</span><span>Ώρες</span></div>
+      <div class="unit"><span class="number" id="minutes">00</span><span>Λεπτά</span></div>
+      <div class="unit"><span class="number" id="seconds">00</span><span>Δευτερόλεπτα</span></div>
+    </div>
+  </section>
+
+  <section class="love-note">
+    <div style="font-size:2rem">💖</div>
+    Ευφροσύνη μου,<br>
+    κάθε στιγμή μακριά σου είναι δύσκολη,<br>
+    αλλά η σκέψη ότι θα σε ξαναδώ<br>
+    κάνει τα πάντα πιο όμορφα! 💞<br><br>
+    <strong>Σ’ αγαπάω πολύ!</strong> 💕
+  </section>
+  <footer>♡ Με αγάπη, πάντα εγώ ❤️ ♡</footer>
+</main>
+
+<script>
+(() => {
+  const input = document.getElementById('meetDate');
+  const status = document.getElementById('status');
+  const ids = ['days', 'hours', 'minutes', 'seconds'];
+  let target = null;
+  let timer = null;
+
+  // Default date/time picker minimum is the current local time.
+  const now = new Date();
+  const localNow = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+    .toISOString().slice(0, 16);
+  input.min = localNow;
+
+  function render() {
+    if (!target) return;
+    let diff = target.getTime() - Date.now();
+
+    if (diff <= 0) {
+      ids.forEach(id => document.getElementById(id).textContent = '00');
+      status.textContent = 'Ήρθε η ώρα να βρεθούμε! Τρέχω για αγκαλιά! 🥰';
+      clearInterval(timer);
+      timer = null;
+      return;
+    }
+
+    const days = Math.floor(diff / 86400000); diff %= 86400000;
+    const hours = Math.floor(diff / 3600000); diff %= 3600000;
+    const minutes = Math.floor(diff / 60000); diff %= 60000;
+    const seconds = Math.floor(diff / 1000);
+
+    [days, hours, minutes, seconds].forEach((value, i) => {
+      document.getElementById(ids[i]).textContent = String(value).padStart(2, '0');
+    });
+    status.textContent = 'Μετράμε αντίστροφα μέχρι την αγκαλιά μας! 💗';
+  }
+
+  document.getElementById('startBtn').addEventListener('click', () => {
+    if (!input.value) {
+      status.textContent = 'Διάλεξε πρώτα την ημέρα και την ώρα μας 💕';
+      input.focus();
+      return;
+    }
+    const selected = new Date(input.value);
+    if (Number.isNaN(selected.getTime())) {
+      status.textContent = 'Η ημερομηνία δεν είναι έγκυρη. Δοκίμασε ξανά.';
+      return;
+    }
+    if (selected.getTime() <= Date.now()) {
+      status.textContent = 'Διάλεξε μια μελλοντική ημερομηνία και ώρα ✨';
+      return;
+    }
+    target = selected;
+    if (timer) clearInterval(timer);
+    render();
+    timer = setInterval(render, 1000);
+  });
+})();
+</script>
+</body>
+</html>
